@@ -1,43 +1,39 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/sInscrire.dart';
+import 'package:frontend/verifierMail.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Pour encoder les données en JSON
 
-class seConnecter extends StatefulWidget {
-  const seConnecter({super.key});
+class sInscrire extends StatefulWidget {
+  const sInscrire({super.key});
 
   @override
-  State<seConnecter> createState() => _seConnecterState();
+  State<sInscrire> createState() => _sInscrireState();
 }
 
-class _seConnecterState extends State<seConnecter> {
+class _sInscrireState extends State<sInscrire> {
   final _formKey = GlobalKey<FormState>(); // Create a global key for the form
   final _emailController = TextEditingController(); // Controller for email input
-  final _passwordController = TextEditingController(); // Controller for password input
 
   @override
   void dispose() {
     // Libération des ressources des contrôleurs lorsqu'ils ne sont plus nécessaires
     _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
-  void _login() async {
+
+  void envoiMail() async {
     // Utilisation des contrôleurs pour accéder aux valeurs des champs de texte
     final String email = _emailController.text;
-    final String password = _passwordController.text;
 
     print('Email: $email');
-    print('Mot de passe: $password');
 
     // URL de votre endpoint Laravel
-    final String url = 'http://10.0.2.2:8000/api/seConnecter';
+    final String url = 'http://10.0.2.2:8000/api/verifierMail';
 
     // Données à envoyer
     final Map<String, String> data = {
       'email': email,
-      'password': password,
     };
     // Envoi de la requête POST
     try {
@@ -46,13 +42,20 @@ class _seConnecterState extends State<seConnecter> {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(data),
       );
-
-      print(response.body);
+      final String code = response.body;
+      print(code);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => verifierMail(code: code, email: email),
+        ),
+      );
     } catch (e) {
       // Gérer les erreurs de réseau ou autres exceptions ici
       print('Exception: $e');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -68,7 +71,7 @@ class _seConnecterState extends State<seConnecter> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Se connecter',
+                  'S\'inscrire',
                   style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 50.0),
@@ -91,22 +94,6 @@ class _seConnecterState extends State<seConnecter> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
-                  controller: _passwordController,
-                  // Use the controller for password input
-                  obscureText: true,
-                  // Hide password input
-                  decoration: const InputDecoration(
-                    labelText: 'Mot de passe',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez saisir votre mot de passe.';
-                    }
-                    return null; // No error
-                  },
-                ),
                 const SizedBox(height: 20.0),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,35 +101,12 @@ class _seConnecterState extends State<seConnecter> {
                     FilledButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          _login();
+                          envoiMail();
                         }
                       },
-                      child: const Text('Se connecter'),
+                      child: const Text('Vérifier l\'email '),
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(500, 50), // Set button size
-                      ),
-                    ),
-                    const SizedBox(height: 20.0),
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          const TextSpan(
-                            text: 'Pas encore inscrit ? ',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          TextSpan(
-                            text: 'S\'inscrire',
-                            style: const TextStyle(color: Colors.blue),
-                            recognizer: TapGestureRecognizer()..onTap = () => {
-                              // Add navigation logic to your sign-up page here
-                              print('Navigate to sign-up page'),
-                              Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const sInscrire()),
-                              )
-                            },
-                          ),
-                        ],
                       ),
                     ),
                     const SizedBox(height: 20.0),
