@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/ajoutInformation.dart';
 import 'package:frontend/telephone.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Pour encoder les données en JSON
@@ -46,12 +47,18 @@ class _motDePasseState extends State<motDePasse> {
       print(responseData);
       final userId = responseData['user']["id"];
       final String userIdString = userId.toString();
-      print(userId);
-      Navigator.push(
+      print(userIdString);
+      /*Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => telephone(userID: userIdString),
         ),
+      );*/
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ajoutInformation(userID: userIdString),
+          )
       );
     } catch (e) {
       // Gérer les erreurs de réseau ou autres exceptions ici
