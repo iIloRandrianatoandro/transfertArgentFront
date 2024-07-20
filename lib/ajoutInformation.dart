@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/transfererArgentMada.dart';
+import 'package:frontend/transfererArgentUS.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Pour encoder les données en JSON
 
@@ -62,19 +64,14 @@ class _ajoutInformationState extends State<ajoutInformation> {
         body: json.encode(data),
       );
       print(response.body);
-/*
-      // Décoder la réponse JSON
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      print(responseData);
-      final code = responseData['code'];
-      final String codeString = code.toString();
-      print(codeString);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => verifierNumero(userID: widget.userID, code: codeString ),
-        ),
-      );*/
+      if (adresse=='Mada'){
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => transfererArgentMada(userID: widget.userID),
+          ),
+        );
+      }
     } catch (e) {
       // Gérer les erreurs de réseau ou autres exceptions ici
       print('Exception: $e');

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/sInscrire.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Pour encoder les données en JSON
+import 'package:frontend/transfererArgentMada.dart';
+import 'package:frontend/transfererArgentUS.dart';
 
 class seConnecter extends StatefulWidget {
   const seConnecter({super.key});
@@ -28,8 +30,8 @@ class _seConnecterState extends State<seConnecter> {
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
-    print('Email: $email');
-    print('Mot de passe: $password');
+    /*print('Email: $email');
+    print('Mot de passe: $password');*/
 
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/seConnecter';
@@ -47,12 +49,56 @@ class _seConnecterState extends State<seConnecter> {
         body: json.encode(data),
       );
 
-      print(response.body);
+      //print(response.body);
+      // Décoder la réponse JSON
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      print(responseData);
+      final userId = responseData['userID'];
+      final String userIdString = userId.toString();
+      final adresse = responseData['adresse'];
+      final String adresseString = adresse.toString();
+      print(adresseString);
+      if (response.body == 'erreur authentification') {
+        _showErrorDialog('Erreur d\'authentification ');
+      }
+      else {
+        if (adresseString=='Mada'){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => transfererArgentMada(userID: userIdString),
+            ),
+          );
+        }
+        if (adresseString=='US'){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => transfererArgentUS(userID: userIdString),
+            ),
+          );
+        }
+      }
     } catch (e) {
       // Gérer les erreurs de réseau ou autres exceptions ici
       print('Exception: $e');
     }
   }
+    void _showErrorDialog(String message) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Erreur'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Fermer'),
+            ),
+          ],
+        ),
+      );
+    }
   @override
   Widget build(BuildContext context) {
     return Form(
