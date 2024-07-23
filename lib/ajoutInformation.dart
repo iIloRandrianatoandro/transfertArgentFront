@@ -46,7 +46,7 @@ class _ajoutInformationState extends State<ajoutInformation> {
     // Send data to backend
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/ajouterInformation/${widget.userID}';
-  print(url);
+    //print(url);
     // Données à envoyer
     final Map<String, String> data = {
       'nom' : nom,

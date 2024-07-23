@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const seConnecter()),
             );
           },
-          child: const Text('Se connecter'),
+          child: const Text('Se connecter oooo'),
         ),
       ),
     );

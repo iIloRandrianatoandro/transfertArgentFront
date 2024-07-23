@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Pour encoder les données en JSON
+import 'package:frontend/seConnecter.dart';
 
 class transfererArgentMada extends StatefulWidget {
   final String userID;
@@ -12,21 +13,63 @@ class transfererArgentMada extends StatefulWidget {
 }
 
 class _transfererArgentMadaState extends State<transfererArgentMada> {
+
   // Flag to indicate selected button (local or international)
   bool local = true;
 
+  @override
+  void initState() {
+    super.initState();
+    getListeExpediteur();
+    getListeDestinataire();
+  }
   // Sample data for dropdown lists (replace with actual data fetching)
-  final List<String> transactionTypes = ['Bank To Mobile Money', 'Bank To Bank','Mobile Money To Mobile Money'];
-  final List<String> senders = ['John Doe', 'Jane Doe'];
-  final List<String> recipients = ['David Lee', 'Alice Smith'];
+  final List<String> listeTypeTransaction = ['Bank To Mobile Money', 'Bank To Bank','Mobile Money To Mobile Money'];
+  List<String> listeExpediteur=[];
+  List<String> listeDestinataire=[];
 
   // Selected values for dropdowns (initialize with defaults)
-  String _selectedTransactionType = 'Bank To Bank';
-  String _selectedSender = 'John Doe';
-  String _selectedRecipient = 'David Lee';
+  String typeTransactionSelectionne = 'Bank To Bank';
+  String? expediteurSelectionne;
+  String? destinataireSelectionne;
+
+
+  //get listes expediteur from backend
+  void getListeExpediteur()async{
+    // URL de votre endpoint Laravel
+    final String url = 'http://10.0.2.2:8000/api/listerCompteExpediteur/${widget.userID}';
+    final http.Response response = await http.get(Uri.parse(url));
+    final dynamic responseData = json.decode(response.body);
+    List<String> numeroComptes = [];
+    for (final compteData in responseData) {
+      numeroComptes.add(compteData["numeroCompte"] as String);
+    }
+    setState(() {
+      listeExpediteur = numeroComptes;
+    });
+    print(listeExpediteur);
+  }
+  //get listes expediteur from backend
+  void getListeDestinataire()async{
+    // URL de votre endpoint Laravel
+    final String url = 'http://10.0.2.2:8000/api/listerCompteDestinataire/${widget.userID}';
+    final http.Response response = await http.get(Uri.parse(url));
+    final dynamic responseData = json.decode(response.body);
+    List<String> numeroComptes = [];
+    for (final compteData in responseData) {
+      numeroComptes.add(compteData["numeroCompte"] as String);
+    }
+    setState(() {
+      listeDestinataire = numeroComptes;
+    });
+    print(listeDestinataire);
+  }
 
   // Text controller for the amount input
-  final _amountController = TextEditingController();
+  final _sommeController = TextEditingController();
+
+  final String ajouterOption = 'Ajouter';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,12 +103,12 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
               //si local
               if(local) ... [
                 DropdownButtonFormField<String>(
-                  value: _selectedTransactionType,
-                  items: transactionTypes.map((type) => DropdownMenuItem(
+                  value: typeTransactionSelectionne,
+                  items: listeTypeTransaction.map((type) => DropdownMenuItem(
                     value: type,
                     child: Text(type),
                   )).toList(),
-                  onChanged: (value) => setState(() => _selectedTransactionType = value!),
+                  onChanged: (value) => setState(() => typeTransactionSelectionne = value!),
                   decoration: const InputDecoration(
                     labelText: 'Type de transaction',
                     border: OutlineInputBorder(),
@@ -73,12 +116,12 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                 ),
                 const SizedBox(height: 10.0),
                 DropdownButtonFormField<String>(
-                  value: _selectedSender,
-                  items: senders.map((sender) => DropdownMenuItem(
+                  value: expediteurSelectionne,
+                  items: listeExpediteur.map((sender) => DropdownMenuItem(
                     value: sender,
                     child: Text(sender),
                   )).toList(),
-                  onChanged: (value) => setState(() => _selectedSender = value!),
+                  onChanged: (value) => setState(() => expediteurSelectionne = value!),
                   decoration: const InputDecoration(
                     labelText: 'Expéditeur',
                     border: OutlineInputBorder(),
@@ -86,12 +129,21 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                 ),
                 const SizedBox(height: 10.0),
                 DropdownButtonFormField<String>(
-                  value: _selectedRecipient,
-                  items: recipients.map((recipient) => DropdownMenuItem(
+                  value: destinataireSelectionne,
+                  items: [ajouterOption, ...listeDestinataire].map((recipient) => DropdownMenuItem(
                     value: recipient,
                     child: Text(recipient),
                   )).toList(),
-                  onChanged: (value) => setState(() => _selectedRecipient = value!),
+                  onChanged: (value) {
+                    if (value == ajouterOption) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const seConnecter()),
+                      );
+                    } else {
+                      setState(() => destinataireSelectionne = value!);
+                    }
+                  },
                   decoration: const InputDecoration(
                     labelText: 'Destinataire',
                     border: OutlineInputBorder(),
@@ -99,19 +151,19 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                 ),
                 const SizedBox(height: 10.0),
                 TextField(
-                  controller: _amountController,
+                  controller: _sommeController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: 'Somme',
                     border: OutlineInputBorder(),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: (){print('Transfert local en cours...');},
+                const SizedBox(height: 20.0),
+                FilledButton(
+                  onPressed: (){print('Transfert local en cours...');getListeExpediteur();},
                   child: const Text('Transferer'),
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    textStyle: const TextStyle(fontSize: 18),
+                    minimumSize: const Size(500, 50),
                   ),
                 ),
               ]
