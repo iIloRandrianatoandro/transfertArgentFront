@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/ajouterCompteDestinataire.dart';
+import 'package:frontend/ajouterCompteExpediteur.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Pour encoder les données en JSON
 import 'package:frontend/seConnecter.dart';
 
 class transfererArgentMada extends StatefulWidget {
   final String userID;
-
   const transfererArgentMada({Key? key, required this.userID}) : super(key: key);
 
   @override
@@ -117,20 +118,7 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                 const SizedBox(height: 10.0),
                 DropdownButtonFormField<String>(
                   value: expediteurSelectionne,
-                  items: listeExpediteur.map((sender) => DropdownMenuItem(
-                    value: sender,
-                    child: Text(sender),
-                  )).toList(),
-                  onChanged: (value) => setState(() => expediteurSelectionne = value!),
-                  decoration: const InputDecoration(
-                    labelText: 'Expéditeur',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                DropdownButtonFormField<String>(
-                  value: destinataireSelectionne,
-                  items: [ajouterOption, ...listeDestinataire].map((recipient) => DropdownMenuItem(
+                  items: [...listeExpediteur, ajouterOption].map((recipient) => DropdownMenuItem(
                     value: recipient,
                     child: Text(recipient),
                   )).toList(),
@@ -138,7 +126,29 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                     if (value == ajouterOption) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const seConnecter()),
+                        MaterialPageRoute(builder: (context) =>  ajouterCompteExpediteur(userID:widget.userID)),
+                      );
+                    } else {
+                      setState(() => destinataireSelectionne = value!);
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Expediteur',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                DropdownButtonFormField<String>(
+                  value: destinataireSelectionne,
+                  items: [...listeDestinataire,ajouterOption].map((recipient) => DropdownMenuItem(
+                    value: recipient,
+                    child: Text(recipient),
+                  )).toList(),
+                  onChanged: (value) {
+                    if (value == ajouterOption) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ajouterCompteDestinataire()),
                       );
                     } else {
                       setState(() => destinataireSelectionne = value!);
