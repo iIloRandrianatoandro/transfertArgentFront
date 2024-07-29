@@ -3,16 +3,16 @@ import 'dart:convert'; // Pour encoder les données en JSON
 import 'package:http/http.dart' as http;
 import 'package:frontend/transfererArgentMada.dart';
 
-class ajouterCompteExpediteur extends StatefulWidget {
+class ajouterCompteExpediteurMada extends StatefulWidget {
   final String userID;
 
-  const ajouterCompteExpediteur({Key? key, required this.userID}) : super(key: key);
+  const ajouterCompteExpediteurMada({Key? key, required this.userID}) : super(key: key);
 
   @override
-  State<ajouterCompteExpediteur> createState() => _ajouterCompteExpediteurState();
+  State<ajouterCompteExpediteurMada> createState() => _ajouterCompteExpediteurState();
 }
 
-class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteur> {
+class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurMada> {
   final List<String> listeTypeCompte = ['Compte bancaire','Mobile Money'];
   // Selected values for dropdowns (initialize with defaults)
   String typeCompteSelectionne = 'Compte bancaire';
@@ -29,6 +29,7 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteur> {
     final String somme = _sommeController.text;
     final String motDePasseCompte = _passwordController.text;
     final String destinataire = "false";
+    final String adresse = "Mada";
     // Send data to backend
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/associerCompte/${widget.userID}';
@@ -40,6 +41,7 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteur> {
       'motDePasseCompte' : motDePasseCompte,
       'typeCompte' : typeCompteSelectionne,
       'destinataire': destinataire,
+      'adresse': adresse,
     };
     print(data);
     // Envoi de la requête POST

@@ -3,16 +3,16 @@ import 'dart:convert'; // Pour encoder les données en JSON
 import 'package:http/http.dart' as http;
 import 'package:frontend/transfererArgentMada.dart';
 
-class ajouterCompteDestinataireMada extends StatefulWidget {
+class ajouterCompteDestinataireUS extends StatefulWidget {
   final String userID;
 
-  const ajouterCompteDestinataireMada({Key? key, required this.userID}) : super(key: key);
+  const ajouterCompteDestinataireUS({Key? key, required this.userID}) : super(key: key);
 
   @override
-  State<ajouterCompteDestinataireMada> createState() => _ajouterCompteDestinataireState();
+  State<ajouterCompteDestinataireUS> createState() => _ajouterCompteDestinataireState();
 }
 
-class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireMada> {
+class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireUS> {
   final List<String> listeTypeCompte = ['Compte bancaire','Mobile Money'];
   // Selected values for dropdowns (initialize with defaults)
   String typeCompteSelectionne = 'Compte bancaire';
@@ -20,7 +20,7 @@ class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireMad
   final _numeroController = TextEditingController();
   final _nomController = TextEditingController();
   final _passwordController = TextEditingController();
-  final String adresse = "Mada";
+  final String adresse = "US";
   void ajouterDestinataire() async{
     // Extract data from controllers
     final String numeroCompte = _numeroController.text;
