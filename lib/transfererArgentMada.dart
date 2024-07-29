@@ -30,46 +30,269 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
   List<String> listeDestinataire=[];
 
   // Selected values for dropdowns (initialize with defaults)
-  String typeTransactionSelectionne = 'Bank To Bank';
+  String typeTransactionSelectionne = 'Mobile Money To Mobile Money';
   String? expediteurSelectionne;
   String? destinataireSelectionne;
 
 
   //get listes expediteur from backend
   void getListeExpediteur()async{
-    // URL de votre endpoint Laravel
-    final String url = 'http://10.0.2.2:8000/api/listerCompteExpediteur/${widget.userID}';
-    final http.Response response = await http.get(Uri.parse(url));
-    final dynamic responseData = json.decode(response.body);
-    List<String> numeroComptes = [];
-    for (final compteData in responseData) {
-      numeroComptes.add(compteData["numeroCompte"] as String);
+    String typeCompte = '';
+    if (typeTransactionSelectionne=='Bank To Bank'|| typeTransactionSelectionne=='Bank To Mobile Money'){
+      typeCompte = 'Compte bancaire';
     }
-    setState(() {
-      listeExpediteur = numeroComptes;
-    });
-    print(listeExpediteur);
+    else if (typeTransactionSelectionne=='Mobile Money To Mobile Money' ){
+      typeCompte = 'Mobile Money';
+    }
+    // URL de votre endpoint Laravel
+    final String url = 'http://10.0.2.2:8000/api/listerCompteExpediteurSelonTypeCompte/${widget.userID}';
+    // Données à envoyer
+    final Map<String, String> data = {
+      'typeCompte' : typeCompte,
+    };
+    print(data);
+    // Envoi de la requête POST
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data),
+      );
+      final dynamic responseData = json.decode(response.body);
+      List<String> numeroComptes = [];
+      for (final compteData in responseData) {
+        numeroComptes.add(compteData["numeroCompte"] as String);
+      }
+      setState(() {
+        listeExpediteur = numeroComptes;
+      });
+      print('listeExpediteur : $listeExpediteur');
+    }catch (e) {
+      // Gérer les erreurs de réseau ou autres exceptions ici
+      print('Exception: $e');
+    }
   }
   //get listes expediteur from backend
   void getListeDestinataire()async{
-    // URL de votre endpoint Laravel
-    final String url = 'http://10.0.2.2:8000/api/listerCompteDestinataire/${widget.userID}';
-    final http.Response response = await http.get(Uri.parse(url));
-    final dynamic responseData = json.decode(response.body);
-    List<String> numeroComptes = [];
-    for (final compteData in responseData) {
-      numeroComptes.add(compteData["numeroCompte"] as String);
+    String typeCompte = '';
+    if (typeTransactionSelectionne=='Bank To Bank'){
+      typeCompte = 'Compte bancaire';
     }
-    setState(() {
-      listeDestinataire = numeroComptes;
-    });
-    print(listeDestinataire);
+    else if (typeTransactionSelectionne=='Mobile Money To Mobile Money' || typeTransactionSelectionne=='Bank To Mobile Money'){
+      typeCompte = 'Mobile Money';
+    }
+    // URL de votre endpoint Laravel
+    final String url = 'http://10.0.2.2:8000/api/listerCompteDestinataireSelonTypeCompte/${widget.userID}';
+    // Données à envoyer
+    final Map<String, String> data = {
+      'typeCompte' : typeCompte,
+    };
+    print(data);
+    // Envoi de la requête POST
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data),
+      );
+      final dynamic responseData = json.decode(response.body);
+      List<String> numeroComptes = [];
+      for (final compteData in responseData) {
+        numeroComptes.add(compteData["numeroCompte"] as String);
+      }
+      setState(() {
+        listeDestinataire = numeroComptes;
+      });
+      print('listeDestinataire : $listeDestinataire');
+    }catch (e) {
+      // Gérer les erreurs de réseau ou autres exceptions ici
+      print('Exception: $e');
+    }
   }
 
   // Text controller for the amount input
   final _sommeController = TextEditingController();
+  void voirCoutTransaction()async{
+    //print('voirCoutTransaction');
+    // Extract data from controllers
+    final String typeTransaction = typeTransactionSelectionne;
+    final String compteExpediteur = expediteurSelectionne!;
+    final String sommeTransaction = _sommeController.text;
+    final String compteDestinataire = destinataireSelectionne!;
+    final String porteeTransaction='local';
+    final String madaToUs='true';
+    // Send data to backend
+    // URL de votre endpoint Laravel
+    final String url = 'http://10.0.2.2:8000/api/voirCoutTransaction/${widget.userID}';
+    //print(url);
+    // Données à envoyer
+    final Map<String, dynamic> data = {
+      'typeTransaction' : typeTransaction,
+      'compteExpediteur' : compteExpediteur,
+      'sommeTransaction' : sommeTransaction,
+      'compteDestinataire' : compteDestinataire,
+      'porteeTransaction': porteeTransaction,
+      'madaToUs':madaToUs,
+    };
+    //print(data);
+    // Envoi de la requête POST
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data),
+      );
+      // Décoder la réponse JSON
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      print(responseData);
 
-  final String ajouterOption = 'Ajouter';
+      // Extraire les informations de la réponse
+      final String compteExpediteur = responseData['compteExpediteur'];
+      final String compteDestinataire = responseData['compteDestinataire'];
+      final String delais = responseData['delais'].toString();
+      final String typeTransaction = responseData['typeTransaction'];
+      final String fraisTransfert = responseData['fraisTransfert'].toString();
+      final String porteeTransaction = responseData['porteeTransaction'];
+      final String tauxDeChange = responseData['tauxDeChange'].toString();
+      final String sommeTransaction = responseData['sommeTransaction'];
+
+      // Afficher la boîte de dialogue de confirmation
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirmation de transaction'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  Text('Compte expéditeur: $compteExpediteur'),
+                  Text('Compte destinataire: $compteDestinataire'),
+                  Text('Délais: $delais'),
+                  Text('Type de transaction: $typeTransaction'),
+                  Text('Frais de transfert: $fraisTransfert'),
+                  Text('Portée de la transaction: $porteeTransaction'),
+                  Text('Taux de change: $tauxDeChange'),
+                  Text('Somme de la transaction: $sommeTransaction'),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Annuler'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Confirmer'),
+                onPressed: () {
+                  print('confirmer');
+                  transfererArgent(
+                    typeTransaction: typeTransaction,
+                    compteExpediteur: compteExpediteur,
+                    sommeTransaction: sommeTransaction,
+                    compteDestinataire: compteDestinataire,
+                    porteeTransaction: porteeTransaction,
+                    fraisTransfert: fraisTransfert,
+                    tauxDeChange: tauxDeChange,
+                    delais: delais,
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }catch (e) {
+      // Gérer les erreurs de réseau ou autres exceptions ici
+      print('Exception: $e');
+    }
+  }
+  void transfererArgent({
+    required String typeTransaction,
+    required String compteExpediteur,
+    required String sommeTransaction,
+    required String compteDestinataire,
+    required String porteeTransaction,
+    required String fraisTransfert,
+    required String tauxDeChange,
+    required String delais,
+  })async{
+    // Send data to backend
+    // URL de votre endpoint Laravel
+    final String url = 'http://10.0.2.2:8000/api/creerTransaction/${widget.userID}';
+    //print(url);
+    // Données à envoyer
+    final Map<String, String> data = {
+      'typeTransaction' : typeTransaction,
+      'compteExpediteur' : compteExpediteur,
+      'sommeTransaction' : sommeTransaction,
+      'compteDestinataire' : compteDestinataire,
+      'porteeTransaction': porteeTransaction,
+      'fraisTransfert':fraisTransfert,
+      'tauxDeChange':tauxDeChange,
+      'delais':delais,
+
+    };
+    print(data);
+    // Envoi de la requête POST
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data),
+      );
+      print(response.body);
+      if(response.body=="somme manquante"){
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Somme manquante'),
+              content: Text('Vous n\'avez pas assez d\'argent dans votre compte.'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+      else{
+        // Afficher la boîte de dialogue de confirmation
+        showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text('Confirmation'),
+              content: Text('L\'argent a été transféré avec succès.'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => transfererArgentMada(userID: widget.userID),
+                        ),
+                      );
+                    },
+                ),
+              ],
+          );
+        },
+      );
+      }
+    }catch (e) {
+      // Gérer les erreurs de réseau ou autres exceptions ici
+      print('Exception: $e');
+    }
+  }
+  String ajouterOption='Ajouter';
 
   @override
   Widget build(BuildContext context) {
@@ -109,12 +332,19 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                     value: type,
                     child: Text(type),
                   )).toList(),
-                  onChanged: (value) => setState(() => typeTransactionSelectionne = value!),
+                  onChanged: (value) {
+                    setState(() => typeTransactionSelectionne = value!);
+                    getListeDestinataire();
+                    getListeExpediteur();
+                    destinataireSelectionne = null;
+                    expediteurSelectionne= null;
+                  },
                   decoration: const InputDecoration(
                     labelText: 'Type de transaction',
                     border: OutlineInputBorder(),
                   ),
                 ),
+
                 const SizedBox(height: 10.0),
                 DropdownButtonFormField<String>(
                   value: expediteurSelectionne,
@@ -129,7 +359,7 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                         MaterialPageRoute(builder: (context) =>  ajouterCompteExpediteur(userID:widget.userID)),
                       );
                     } else {
-                      setState(() => destinataireSelectionne = value!);
+                      setState(() => expediteurSelectionne = value!);
                     }
                   },
                   decoration: const InputDecoration(
@@ -148,7 +378,7 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                     if (value == ajouterOption) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ajouterCompteDestinataire()),
+                        MaterialPageRoute(builder: (context) => ajouterCompteDestinataire(userID:widget.userID)),
                       );
                     } else {
                       setState(() => destinataireSelectionne = value!);
@@ -170,7 +400,7 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
                 ),
                 const SizedBox(height: 20.0),
                 FilledButton(
-                  onPressed: (){print('Transfert local en cours...');getListeExpediteur();},
+                  onPressed: (){voirCoutTransaction();},
                   child: const Text('Transferer'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(500, 50),
