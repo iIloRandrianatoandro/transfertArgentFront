@@ -33,6 +33,7 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurMada> {
     // Send data to backend
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/associerCompte/${widget.userID}';
+    print(url);
     // Données à envoyer
     final Map<String, String> data = {
       'numeroCompte' : numeroCompte,

@@ -3,6 +3,7 @@ import 'package:frontend/ajouterCompteDestinataire.dart';
 import 'package:frontend/ajouterCompteDestinataireUS.dart';
 import 'package:frontend/ajouterCompteExpediteur.dart';
 import 'package:http/http.dart' as http;
+import 'package:frontend/historiqueTransaction.dart';
 import 'dart:convert'; // Pour encoder les données en JSON
 
 class transfererArgentMada extends StatefulWidget {
@@ -427,6 +428,23 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
     }
   }
   String ajouterOption='Ajouter';
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => transfererArgentMada(userID: widget.userID)),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => historiqueTransaction(userID: widget.userID)),
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -632,6 +650,21 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
               ]
             ],
           )
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Transferer argent',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Historique',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }

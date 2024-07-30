@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/ajouterCompteDestinataireFromUS.dart';
 import 'package:frontend/ajouterCompteExpediteurUS.dart';
+import 'package:frontend/historiqueTransaction.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Pour encoder les données en JSON
 
@@ -283,7 +284,23 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
       print('Exception: $e');
     }
   }
-
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => transfererArgentUS(userID: widget.userID)),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => historiqueTransaction(userID: widget.userID)),
+        );
+        break;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -377,6 +394,21 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
               ),
             ]
         )
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Transferer argent',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Historique',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }
