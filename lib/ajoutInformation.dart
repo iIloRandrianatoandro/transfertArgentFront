@@ -14,6 +14,9 @@ class ajoutInformation extends StatefulWidget {
 }
 
 class _ajoutInformationState extends State<ajoutInformation> {
+  final List<String> listeAdresse = ['Mada','US'];
+  // Selected values for dropdowns (initialize with defaults)
+  String adresseSelectionnee = 'Mada';
   final _nomController = TextEditingController();
   final _prenomController = TextEditingController();
   final _adresseController = TextEditingController();
@@ -21,28 +24,12 @@ class _ajoutInformationState extends State<ajoutInformation> {
   final _dateNaisController = TextEditingController();
 
   void ajouterInformation() async{
-    print('ajout information');
-    print(widget.userID);
     // Extract data from controllers
     final String nom = _nomController.text;
     final String prenom = _prenomController.text;
-    final String adresse = _adresseController.text;
+    final String adresse = adresseSelectionnee;
     final String telephone = _telephoneController.text;
     final String dateNais = _dateNaisController.text;
-
-    /*print(nom);
-    print(prenom);*/
-    // Implement form validation
-    /*if (nom.isEmpty || prenom.isEmpty || adresse.isEmpty || telephone.isEmpty || dateNais.isEmpty) {
-      // Display error message (e.g., using a SnackBar)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Veuillez remplir tous les champs'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }*/
     // Send data to backend
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/ajouterInformation/${widget.userID}';
@@ -69,6 +56,14 @@ class _ajoutInformationState extends State<ajoutInformation> {
           context,
           MaterialPageRoute(
             builder: (context) => transfererArgentMada(userID: widget.userID),
+          ),
+        );
+      }
+      else if (adresse=='US'){
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => transfererArgentUS(userID: widget.userID),
           ),
         );
       }
@@ -109,13 +104,19 @@ class _ajoutInformationState extends State<ajoutInformation> {
               ),
             ),
             const SizedBox(height: 10.0),
-            TextField(
-              controller: _adresseController,
+            DropdownButtonFormField<String>(
+              value: adresseSelectionnee,
+              items: listeAdresse.map((type) => DropdownMenuItem(
+                value: type,
+                child: Text(type),
+              )).toList(),
+              onChanged: (value) => setState(() => adresseSelectionnee = value!),
               decoration: const InputDecoration(
                 labelText: 'Adresse',
                 border: OutlineInputBorder(),
               ),
             ),
+
             const SizedBox(height: 10.0),
             TextField(
               controller: _telephoneController,

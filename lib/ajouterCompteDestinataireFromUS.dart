@@ -4,36 +4,35 @@ import 'dart:convert'; // Pour encoder les données en JSON
 import 'package:http/http.dart' as http;
 import 'package:frontend/transfererArgentMada.dart';
 
-class ajouterCompteExpediteurUS extends StatefulWidget {
+class ajouterCompteDestinataireFromUS extends StatefulWidget {
   final String userID;
 
-  const ajouterCompteExpediteurUS({Key? key, required this.userID}) : super(key: key);
+  const ajouterCompteDestinataireFromUS({Key? key, required this.userID}) : super(key: key);
 
   @override
-  State<ajouterCompteExpediteurUS> createState() => _ajouterCompteExpediteurState();
+  State<ajouterCompteDestinataireFromUS> createState() => _ajouterCompteDestinataireState();
 }
 
-class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
-  final List<String> listeTypeCompte = ['Compte bancaire'];
+class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireFromUS> {
+  final List<String> listeTypeCompte = ['Compte bancaire','Mobile Money'];
   // Selected values for dropdowns (initialize with defaults)
   String typeCompteSelectionne = 'Compte bancaire';
-
   final _sommeController = TextEditingController();
   final _numeroController = TextEditingController();
   final _nomController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  void ajouterExpediteur() async{
+  final String adresse = "Mada";
+  void ajouterDestinataire() async{
     // Extract data from controllers
     final String numeroCompte = _numeroController.text;
     final String nomCompte = _nomController.text;
     final String somme = _sommeController.text;
     final String motDePasseCompte = _passwordController.text;
-    final String destinataire = "false";
-    final String adresse = "US";
+    final String destinataire = "true";
     // Send data to backend
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/associerCompte/${widget.userID}';
+    print(url);
     // Données à envoyer
     final Map<String, String> data = {
       'numeroCompte' : numeroCompte,
@@ -42,7 +41,7 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
       'motDePasseCompte' : motDePasseCompte,
       'typeCompte' : typeCompteSelectionne,
       'destinataire': destinataire,
-      'adresse': adresse,
+      'adresse':adresse,
     };
     print(data);
     // Envoi de la requête POST
@@ -83,6 +82,7 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +95,7 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children : [
               const Text(
-                'Ajout d\' un compte expediteur',
+                'Ajout d\' un compte destinataire',
                 style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20.0),
@@ -148,7 +148,7 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: ajouterExpediteur,
+                  onPressed: ajouterDestinataire,
                   child: const Text('Ajouter'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),

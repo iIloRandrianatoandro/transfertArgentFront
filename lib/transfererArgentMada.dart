@@ -81,7 +81,7 @@ class _transfererArgentMadaState extends State<transfererArgentMada> {
       print('Exception: $e');
     }
   }
-  //get listes expediteur from backend
+  //get listes destinataire from backend
   void getListeDestinataireMada(String adresse)async{
     String typeCompte = '';
     if (typeTransactionSelectionne=='Bank To Bank'){
