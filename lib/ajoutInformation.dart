@@ -7,7 +7,7 @@ import 'dart:convert'; // Pour encoder les données en JSON
 class ajoutInformation extends StatefulWidget {
   final String userID;
 
-  const ajoutInformation({Key? key, required this.userID}) : super(key: key);
+  const ajoutInformation({super.key, required this.userID});
 
   @override
   State<ajoutInformation> createState() => _ajoutInformationState();
@@ -77,6 +77,8 @@ class _ajoutInformationState extends State<ajoutInformation> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('i-Money'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF2596BE), // Couleur de fond de l'AppBar
       ),
       body: SingleChildScrollView( // Allow content to scroll if needed
         padding: const EdgeInsets.all(20.0),
@@ -140,11 +142,12 @@ class _ajoutInformationState extends State<ajoutInformation> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: ajouterInformation,
-                child: const Text('Ajouter'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   textStyle: const TextStyle(fontSize: 18),
+                  backgroundColor: const Color(0xFF2596BE),
                 ),
+                child: const Text('Ajouter'),
               ),
             ),
           ],

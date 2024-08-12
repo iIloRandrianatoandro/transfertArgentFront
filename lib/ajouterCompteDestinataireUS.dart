@@ -6,7 +6,7 @@ import 'package:frontend/transfererArgentMada.dart';
 class ajouterCompteDestinataireUS extends StatefulWidget {
   final String userID;
 
-  const ajouterCompteDestinataireUS({Key? key, required this.userID}) : super(key: key);
+  const ajouterCompteDestinataireUS({super.key, required this.userID});
 
   @override
   State<ajouterCompteDestinataireUS> createState() => _ajouterCompteDestinataireState();
@@ -27,7 +27,7 @@ class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireUS>
     final String nomCompte = _nomController.text;
     final String somme = _sommeController.text;
     final String motDePasseCompte = _passwordController.text;
-    final String destinataire = "true";
+    const String destinataire = "true";
     // Send data to backend
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/associerCompte/${widget.userID}';
@@ -55,14 +55,35 @@ class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireUS>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Succès'),
-            content: Text('Le compte a été ajouté avec succès.'),
+            title: const Text(
+              'Succès',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2596BE), // Custom color for the title
+              ),
+            ),
+            content: const Text(
+              'Le compte a été ajouté avec succès.',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.black54, // Subtle color for the content text
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0), // Rounded corners for the dialog
+            ),
             actions: [
               TextButton(
-                child: Text('OK'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Color(0xFF2596BE), // Button background color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0), // Rounded corners for the button
+                  ),
+                ),
+                child: const Text('OK'),
                 onPressed: () {
-                  Navigator.pop(context); // Fermer la boîte de dialogue
-                  // Retourner à la page précédente
+                  Navigator.pop(context); // Close the dialog
+                  // Navigate back to the previous page
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -73,6 +94,7 @@ class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireUS>
               ),
             ],
           );
+
         },
       );
     }catch (e) {
@@ -86,7 +108,9 @@ class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireUS>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transfert d\'argent'),
+        title: const Text('i-Money'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF2596BE), // Couleur de fond de l'AppBar
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -148,11 +172,12 @@ class _ajouterCompteDestinataireState extends State<ajouterCompteDestinataireUS>
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: ajouterDestinataire,
-                  child: const Text('Ajouter'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: const Color(0xFF2596BE),
                   ),
+                  child: const Text('Ajouter'),
                 ),
               ),
 

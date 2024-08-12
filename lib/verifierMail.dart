@@ -6,7 +6,7 @@ class verifierMail extends StatefulWidget {
   final String code; // Declare the argument
   final String email;
 
-  const verifierMail({Key? key, required this.code, required this.email}) : super(key: key);
+  const verifierMail({super.key, required this.code, required this.email});
 
   @override
   State<verifierMail> createState() => _verifierMailState();
@@ -24,6 +24,8 @@ class _verifierMailState extends State<verifierMail> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('i-Money'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF2596BE), // Couleur de fond de l'AppBar
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -87,10 +89,11 @@ class _verifierMailState extends State<verifierMail> {
                     );
                   }
                 },
-              child: const Text('Vérifier'),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(500, 50), // Set button size
+                backgroundColor: const Color(0xFF2596BE),
               ),
+              child: const Text('Vérifier'),
             )
           ],
         ),

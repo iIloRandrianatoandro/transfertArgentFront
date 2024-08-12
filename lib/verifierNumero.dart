@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert'; // Pour encoder les données en JSON
+// Pour encoder les données en JSON
 class verifierNumero extends StatefulWidget {
   final String userID;
   final String code;
 
-  const verifierNumero({Key? key, required this.userID, required this.code}) : super(key: key);
+  const verifierNumero({super.key, required this.userID, required this.code});
 
   @override
   State<verifierNumero> createState() => _verifierNumeroState();

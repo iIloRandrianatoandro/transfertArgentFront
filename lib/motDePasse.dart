@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/ajoutInformation.dart';
-import 'package:frontend/telephone.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Pour encoder les données en JSON
 
 class motDePasse extends StatefulWidget {
   final String email;
 
-  const motDePasse({Key? key, required this.email}) : super(key: key);
+  const motDePasse({super.key, required this.email});
 
   @override
   State<motDePasse> createState() => _motDePasseState();
@@ -26,7 +25,7 @@ class _motDePasseState extends State<motDePasse> {
   }
   void signIn() async {
     // URL de votre endpoint Laravel
-    final String url = 'http://10.0.2.2:8000/api/sInscrire';
+    const String url = 'http://10.0.2.2:8000/api/sInscrire';
 
     // Données à envoyer
     final Map<String, String> data = {
@@ -74,6 +73,8 @@ class _motDePasseState extends State<motDePasse> {
           // Re-enable the app bar if desired
           appBar: AppBar(
             title: const Text('i-Money'),
+            centerTitle: true,
+            backgroundColor: const Color(0xFF2596BE), // Couleur de fond de l'AppBar
           ),
           body: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -124,10 +125,11 @@ class _motDePasseState extends State<motDePasse> {
                       signIn();
                     }
                   },
-                  child: const Text('Confirmer'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(500, 50), // Set button size
+                    backgroundColor: const Color(0xFF2596BE),
                   ),
+                  child: const Text('Confirmer'),
                 ),
               ],
             ),

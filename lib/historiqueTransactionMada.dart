@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/transfererArgentUS.dart';
+import 'package:frontend/transfererArgentMada.dart';
 import 'package:frontend/voirTransaction.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; // Pour encoder les données en JSON
+import 'dart:convert';
 
 class Transaction {
   final int id;
@@ -65,8 +65,6 @@ class _historiqueTransactionState extends State<historiqueTransaction> {
           } catch (e) {
             print('Error parsing transaction: $e');
           }
-        } else {
-          print('Unexpected data type: $item');
         }
       }
       setState(() {
@@ -94,8 +92,6 @@ class _historiqueTransactionState extends State<historiqueTransaction> {
           } catch (e) {
             print('Error parsing transaction: $e');
           }
-        } else {
-          print('Unexpected data type: $item');
         }
       }
       setState(() {
@@ -117,6 +113,7 @@ class _historiqueTransactionState extends State<historiqueTransaction> {
         centerTitle: true,
         backgroundColor: const Color(0xFF2596BE),
         automaticallyImplyLeading: false,
+        elevation: 10.0, // Ajoute une ombre sous l'AppBar
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -173,7 +170,7 @@ class _historiqueTransactionState extends State<historiqueTransaction> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    transfererArgentUS(userID: widget.userID),
+                    transfererArgentMada(userID: widget.userID),
               ),
             );
           } else if (index == 1) {
@@ -193,35 +190,48 @@ class _historiqueTransactionState extends State<historiqueTransaction> {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF2596BE),
-        ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.history,
+            color: Color(0xFF2596BE),
+          ),
+          const SizedBox(width: 8.0),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF2596BE),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildTransactionTile(Transaction transaction, bool isOngoing) {
     return Card(
-      color: isOngoing ? const Color(0xFFE3F2FD) : const Color(0xFFF1F8E9),
-      elevation: 5,
-      shadowColor: Colors.black45,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
+      color: isOngoing ? Colors.blue.shade50 : Colors.white,
       margin: const EdgeInsets.only(bottom: 8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16.0),
-        leading: Icon(
-          isOngoing ? Icons.sync : Icons.check_circle,
-          color: isOngoing ? Colors.blue : Colors.green,
+        leading: CircleAvatar(
+          backgroundColor: isOngoing ? Colors.blue : Colors.green,
+          child: Icon(
+            isOngoing ? Icons.sync : Icons.check_circle,
+            color: Colors.white,
+          ),
         ),
         title: Text(
           'Expéditeur: ${transaction.compteExpediteur}',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
         subtitle: Text(
           'Destinataire: ${transaction.compteDestinataire}\nMontant: ${transaction.sommeTransaction}',
@@ -229,8 +239,7 @@ class _historiqueTransactionState extends State<historiqueTransaction> {
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: Colors.grey,
-          size: 16.0,
+          color: Colors.grey.shade400,
         ),
         onTap: () {
           print('Transaction sélectionnée: ${transaction.id}');

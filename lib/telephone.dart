@@ -6,7 +6,7 @@ import 'dart:convert'; // Pour encoder les données en JSON
 class telephone extends StatefulWidget {
   final String userID;
 
-  const telephone({Key? key, required this.userID}) : super(key: key);
+  const telephone({super.key, required this.userID});
 
   @override
   State<telephone> createState() => _telephoneState();
@@ -26,7 +26,7 @@ class _telephoneState extends State<telephone> {
     final String phone = _phoneController.text;
     print('Phone number: $phone');
     // URL de votre endpoint Laravel
-    final String url = 'http://10.0.2.2:8000/api/envoyerCodeSmsVerificationTelephone';
+    const String url = 'http://10.0.2.2:8000/api/envoyerCodeSmsVerificationTelephone';
 
     // Données à envoyer
     final Map<String, String> data = {
@@ -90,11 +90,11 @@ class _telephoneState extends State<telephone> {
                   onPressed: (){
                     _verifyPhone();
                   },
-                  child: const Text('Vérifier'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     textStyle: const TextStyle(fontSize: 18),
                   ),
+                  child: const Text('Vérifier'),
                 ),
               ),
             ],

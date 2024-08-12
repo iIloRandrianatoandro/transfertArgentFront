@@ -4,7 +4,7 @@ import 'dart:convert'; // Pour encoder les données en JSON
 class voirTransaction extends StatefulWidget {
   final String TransactionID;
 
-  const voirTransaction({Key? key, required this.TransactionID}) : super(key: key);
+  const voirTransaction({super.key, required this.TransactionID});
 
   @override
   State<voirTransaction> createState() => _voirTransactionState();
@@ -28,7 +28,7 @@ class _voirTransactionState extends State<voirTransaction> {
       final dynamic responseData = json.decode(response.body);
       print('responseData $responseData');
       setState(() {
-        this.transactionData = responseData;
+        transactionData = responseData;
       });
     }catch (e) {
       // Gérer les erreurs de réseau ou autres exceptions ici
@@ -40,30 +40,68 @@ class _voirTransactionState extends State<voirTransaction> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Détails de la transaction'),
+        backgroundColor: const Color(0xFF2596BE), // AppBar background color
       ),
       body: transactionData == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child:Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Compte Expéditeur: ${transactionData!['compteExpediteur']}'),
-            Text('Compte Destinataire: ${transactionData!['compteDestinataire']}'),
-            Text('Montant: ${transactionData!['sommeTransaction']}'),
-            Text('porteeTransaction: ${transactionData!['porteeTransaction']}'),
-            Text('typeTransaction: ${transactionData!['typeTransaction']}'),
-            Text('dateEnvoi: ${transactionData!['dateEnvoi']}'),
-            Text('dateReception: ${transactionData!['dateReception']}'),
-            Text('fraisTransfert: ${transactionData!['fraisTransfert']}'),
-            Text('tauxDeChange: ${transactionData!['tauxDeChange']}'),
-            Text('delais: ${transactionData!['delais']}'),
-            // Ajoutez d'autres champs ici
-          ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTransactionDetail(
+                  'Compte Expéditeur', transactionData!['compteExpediteur']),
+              _buildTransactionDetail(
+                  'Compte Destinataire', transactionData!['compteDestinataire']),
+              _buildTransactionDetail(
+                  'Montant', transactionData!['sommeTransaction']),
+              _buildTransactionDetail(
+                  'Portée de la Transaction', transactionData!['porteeTransaction']),
+              _buildTransactionDetail(
+                  'Type de Transaction', transactionData!['typeTransaction']),
+              _buildTransactionDetail(
+                  'Date d\'Envoi', transactionData!['dateEnvoi']),
+              _buildTransactionDetail(
+                  'Date de Réception', transactionData!['dateReception']),
+              _buildTransactionDetail(
+                  'Frais de Transfert', transactionData!['fraisTransfert']),
+              _buildTransactionDetail(
+                  'Taux de Change', transactionData!['tauxDeChange']),
+              _buildTransactionDetail('Délai', transactionData!['delais']),
+              // Ajoutez d'autres champs ici si nécessaire
+            ],
+          ),
         ),
       ),
-    ),
+    );
+  }
+  Widget _buildTransactionDetail(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0), // Spacing between rows
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              '$title :',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 16.0,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

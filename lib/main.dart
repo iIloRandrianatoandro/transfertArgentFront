@@ -28,20 +28,34 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Page d\'accueil'),
-      ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const seConnecter()),
-            );
-          },
-          child: const Text('Se connecter oooo'),
-        ),
+        child: Column(
+        mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+        children: [
+          // Add your logo image here
+          Image.asset('assets/Images/logo1.png'), // Replace 'path/to/your/logo.png' with the actual path to your logo image
+          const SizedBox(height: 20), // Add some space between logo and text
+          Text(
+            'Transférer votre argent en toute sécurité',
+            style: const TextStyle(fontSize: 18),
+          ),
+          const SizedBox(height: 20), // Add some space between text and button
+          FilledButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const seConnecter()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(350, 50), // Set button size
+              backgroundColor: const Color(0xFF2596BE),
+            ),
+            child: const Text('Se connecter'),
+          ),
+        ],
       ),
+    ),
     );
   }
 }

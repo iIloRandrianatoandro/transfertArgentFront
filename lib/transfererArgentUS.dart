@@ -8,7 +8,7 @@ import 'dart:convert'; // Pour encoder les données en JSON
 class transfererArgentUS extends StatefulWidget {
   final String userID;
 
-  const transfererArgentUS({Key? key, required this.userID}) : super(key: key);
+  const transfererArgentUS({super.key, required this.userID});
 
   @override
   State<transfererArgentUS> createState() => _transfererArgentUSState();
@@ -112,7 +112,7 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
     final String compteExpediteur = expediteurSelectionneUS!;
     final String sommeTransaction = _sommeController.text;
     final String compteDestinataire = destinataireSelectionneMada!;
-    final String madaToUs='false';
+    const String madaToUs='false';
     // Send data to backend
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/voirCoutTransaction/${widget.userID}';
@@ -153,30 +153,66 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Confirmation de transaction'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0), // Bordures arrondies pour le dialogue
+            ),
+            title: const Text(
+              'Confirmation de transaction',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2596BE), // Couleur du texte du titre
+              ),
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: [
-                  Text('Compte expéditeur: $compteExpediteur'),
-                  Text('Compte destinataire: $compteDestinataire'),
-                  Text('Délais: $delais'),
-                  Text('Type de transaction: $typeTransaction'),
-                  Text('Frais de transfert: $fraisTransfert'),
-                  Text('Portée de la transaction: $porteeTransaction'),
-                  Text('Taux de change: $tauxDeChange'),
-                  Text('Somme de la transaction: $sommeTransaction'),
+                  _buildTransactionDetail('Compte expéditeur:', compteExpediteur),
+                  _buildTransactionDetail('Compte destinataire:', compteDestinataire),
+                  _buildTransactionDetail('Délais:', delais),
+                  _buildTransactionDetail('Type de transaction:', typeTransaction),
+                  _buildTransactionDetail('Frais de transfert:', fraisTransfert),
+                  _buildTransactionDetail('Portée de la transaction:', porteeTransaction),
+                  _buildTransactionDetail('Taux de change:', tauxDeChange),
+                  _buildTransactionDetail('Somme de la transaction:', sommeTransaction),
                 ],
               ),
             ),
             actions: [
               TextButton(
-                child: const Text('Annuler'),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  backgroundColor: Colors.grey.shade200, // Couleur de fond du bouton Annuler
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0), // Bordures arrondies pour le bouton
+                  ),
+                ),
+                child: const Text(
+                  'Annuler',
+                  style: TextStyle(
+                    color: Colors.black, // Couleur du texte du bouton Annuler
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
-                child: const Text('Confirmer'),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  backgroundColor: const Color(0xFF2596BE), // Couleur de fond du bouton Confirmer
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0), // Bordures arrondies pour le bouton
+                  ),
+                ),
+                child: const Text(
+                  'Confirmer',
+                  style: TextStyle(
+                    color: Colors.white, // Couleur du texte du bouton Confirmer
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 onPressed: () {
                   print('confirmer');
                   transfererArgent(
@@ -193,6 +229,7 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
               ),
             ],
           );
+
         },
       );
     }catch (e) {
@@ -240,31 +277,40 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Somme manquante'),
-              content: Text('Vous n\'avez pas assez d\'argent dans votre compte.'),
-              actions: [
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0), // Bordures arrondies pour le dialogue
+              ),
+              title: const Text(
+                'Somme manquante',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2596BE), // Couleur du texte du titre
                 ),
-              ],
-            );
-          },
-        );
-      }
-      else{
-        // Afficher la boîte de dialogue de confirmation
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Confirmation'),
-              content: Text('L\'argent a été transféré avec succès.'),
+              ),
+              content: const Text(
+                'Vous n\'avez pas assez d\'argent sur votre compte.',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.black54, // Couleur du texte du contenu
+                ),
+              ),
               actions: [
                 TextButton(
-                  child: const Text('OK'),
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color(0xFF2596BE), // Couleur de fond du bouton
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0), // Bordures arrondies pour le bouton
+                    ),
+                  ),
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white, // Couleur du texte du bouton
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -279,12 +325,66 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
           },
         );
       }
+      else{
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0), // Bordures arrondies pour le dialogue
+              ),
+              title: const Text(
+                'Confirmation',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2596BE), // Couleur du texte du titre
+                ),
+              ),
+              content: const Text(
+                'L\'argent a été transféré avec succès.',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.black54, // Couleur du texte du contenu
+                ),
+              ),
+              actions: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color(0xFF2596BE), // Couleur de fond du bouton
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0), // Bordures arrondies pour le bouton
+                    ),
+                  ),
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(
+                      color: Colors.white, // Couleur du texte du bouton
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => transfererArgentUS(userID: widget.userID),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+
+          },
+        );
+      }
     }catch (e) {
       // Gérer les erreurs de réseau ou autres exceptions ici
       print('Exception: $e');
     }
   }
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   void _onItemTapped(int index) {
     switch (index) {
       case 0:
@@ -301,11 +401,44 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
         break;
     }
   }
+  // Définition de la fonction helper pour styliser les détails de la transaction
+  Widget _buildTransactionDetail(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0), // Espacement vertical entre les lignes
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 4, // Contrôle la largeur du titre
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 6, // Contrôle la largeur de la valeur
+            child: Text(
+              value,
+              style: const TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transfert d\'argent'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF2596BE), // Couleur de fond de l'AppBar
+        automaticallyImplyLeading: false, // Supprime la flèche de retour
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -387,10 +520,11 @@ class _transfererArgentUSState extends State<transfererArgentUS> {
               const SizedBox(height: 20.0),
               FilledButton(
                 onPressed: (){voirCoutTransactionUS('international');},
-                child: const Text('Transferer'),
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(500, 50),
+                  backgroundColor: const Color(0xFF2596BE),
                 ),
+                child: const Text('Transferer'),
               ),
             ]
         )

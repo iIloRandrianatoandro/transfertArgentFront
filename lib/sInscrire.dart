@@ -29,7 +29,7 @@ class _sInscrireState extends State<sInscrire> {
     print('Email: $email');
 
     // URL de votre endpoint Laravel
-    final String url = 'http://10.0.2.2:8000/api/verifierMail';
+    const String url = 'http://10.0.2.2:8000/api/verifierMail';
 
     // Données à envoyer
     final Map<String, String> data = {
@@ -63,6 +63,8 @@ class _sInscrireState extends State<sInscrire> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('i-Money'),
+          centerTitle: true,
+          backgroundColor: const Color(0xFF2596BE), // Couleur de fond de l'AppBar
         ),
         body: Center(
           child: Padding(
@@ -104,10 +106,11 @@ class _sInscrireState extends State<sInscrire> {
                           envoiMail();
                         }
                       },
-                      child: const Text('Vérifier l\'email '),
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(500, 50), // Set button size
+                        backgroundColor: const Color(0xFF2596BE),
                       ),
+                      child: const Text('Vérifier l\'email '),
                     ),
                     const SizedBox(height: 20.0),
                     RichText(
@@ -116,9 +119,9 @@ class _sInscrireState extends State<sInscrire> {
                           TextSpan(
                             text: 'Se connecter avec Google',
                             style: const TextStyle(color: Colors.blue),
-                            recognizer: TapGestureRecognizer()..onTap = () => {
+                            recognizer: TapGestureRecognizer()..onTap = () {
                               // Add navigation logic to your sign-up page here
-                              print('google'),
+                              print('google');
                             },
                           ),
                         ],

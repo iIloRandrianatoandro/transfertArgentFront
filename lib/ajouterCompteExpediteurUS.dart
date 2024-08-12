@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:frontend/transfererArgentUS.dart';
 import 'dart:convert'; // Pour encoder les données en JSON
 import 'package:http/http.dart' as http;
-import 'package:frontend/transfererArgentMada.dart';
 
 class ajouterCompteExpediteurUS extends StatefulWidget {
   final String userID;
 
-  const ajouterCompteExpediteurUS({Key? key, required this.userID}) : super(key: key);
+  const ajouterCompteExpediteurUS({super.key, required this.userID});
 
   @override
   State<ajouterCompteExpediteurUS> createState() => _ajouterCompteExpediteurState();
@@ -29,8 +28,8 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
     final String nomCompte = _nomController.text;
     final String somme = _sommeController.text;
     final String motDePasseCompte = _passwordController.text;
-    final String destinataire = "false";
-    final String adresse = "US";
+    const String destinataire = "false";
+    const String adresse = "US";
     // Send data to backend
     // URL de votre endpoint Laravel
     final String url = 'http://10.0.2.2:8000/api/associerCompte/${widget.userID}';
@@ -57,14 +56,35 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Succès'),
-            content: Text('Le compte a été ajouté avec succès.'),
+            title: const Text(
+              'Succès',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2596BE), // Custom color for the title
+              ),
+            ),
+            content: const Text(
+              'Le compte a été ajouté avec succès.',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.black54, // Subtle color for the content text
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0), // Rounded corners for the dialog
+            ),
             actions: [
               TextButton(
-                child: Text('OK'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Color(0xFF2596BE), // Button background color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0), // Rounded corners for the button
+                  ),
+                ),
+                child: const Text('OK'),
                 onPressed: () {
-                  Navigator.pop(context); // Fermer la boîte de dialogue
-                  // Retourner à la page précédente
+                  Navigator.pop(context); // Close the dialog
+                  // Navigate back to the previous page
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -87,7 +107,9 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transfert d\'argent'),
+        title: const Text('i-Money'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF2596BE), // Couleur de fond de l'AppBar
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -149,11 +171,12 @@ class _ajouterCompteExpediteurState extends State<ajouterCompteExpediteurUS> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: ajouterExpediteur,
-                  child: const Text('Ajouter'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     textStyle: const TextStyle(fontSize: 18),
+                    backgroundColor: const Color(0xFF2596BE),
                   ),
+                  child: const Text('Ajouter'),
                 ),
               ),
 
